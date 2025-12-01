@@ -18,7 +18,11 @@ return new class extends Migration
             $table->decimal('price', 10, 2);
             $table->unsignedSmallInteger('tax_percentage'); //Planned to store GST (e.g., 5, 12, 18, 28)
             $table->decimal('available_stock', 10, 3)->default(0);
-            $table->timestamps();
+            $table->timestamp('created_at')
+                ->useCurrent();
+            $table->timestamp('updated_at')
+                ->useCurrent()
+                ->useCurrentOnUpdate();
             $table->softDeletes();
         });
     }

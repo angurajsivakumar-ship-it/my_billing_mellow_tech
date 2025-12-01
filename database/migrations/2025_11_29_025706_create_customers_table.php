@@ -15,8 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('name', 180)->index();
             $table->string('email', 150)->unique();
-            $table->string('mobile_no', 16)->unique();
-            $table->timestamps();
+            $table->string('mobile_no', 16)->unique()->default(null);
+            $table->timestamp('created_at')
+                ->useCurrent();
+            $table->timestamp('updated_at')
+                ->useCurrent()
+                ->useCurrentOnUpdate();
             $table->softDeletes();
         });
     }

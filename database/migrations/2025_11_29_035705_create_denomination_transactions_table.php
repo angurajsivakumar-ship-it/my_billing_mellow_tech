@@ -13,15 +13,27 @@ return new class extends Migration
     {
         Schema::create('denomination_transactions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('invoice_id')
-                ->constrained()
-                ->cascadeOnDelete();
-            $table->foreignId('denomination_id')
-                ->constrained()
-                ->cascadeOnDelete();
+            $table->unsignedBigInteger('invoice_id');
+            $table->unsignedBigInteger('denomination_id');
             $table->unsignedInteger('count_used');
-            $table->timestamps();
+            $table->timestamp('created_at')
+                ->useCurrent();
+
+            $table->timestamp('updated_at')
+                ->useCurrent()
+                ->useCurrentOnUpdate();
             $table->unique(['invoice_id', 'denomination_id']);
+
+            $table->foreign('invoice_id', 'fk_denom_tx_invoice_id')
+                ->references('id')
+                ->on('invoices')
+                ->cascadeOnDelete();
+
+            // Foreign key → denominations
+            $table->foreign('denomination_id', 'fk_denom_tx_denomination_id')
+                ->references('id')
+                ->on('denominations')
+                ->cascadeOnDelete();
         });
     }
 

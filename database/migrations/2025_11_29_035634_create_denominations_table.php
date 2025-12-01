@@ -12,13 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('denominations', function (Blueprint $table) {
-            Schema::create('denominations', function (Blueprint $table) {
                 $table->id();
                 $table->unsignedInteger('value')->unique();
                 $table->unsignedInteger('available_count')->default(0);
-                $table->timestamps();
+                $table->timestamp('created_at')
+                    ->useCurrent();
+                $table->timestamp('updated_at')
+                    ->useCurrent()
+                    ->useCurrentOnUpdate();
                 $table->index('value');
-            });
         });
     }
 

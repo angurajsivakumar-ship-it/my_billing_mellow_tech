@@ -13,13 +13,14 @@ return new class extends Migration
     {
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
+            $table->string('invoice_no', 150)->default('')->unique();
             $table->foreignId('customer_id')->constrained('customers')->index();
             $table->decimal('total_amount', 10, 2);
             $table->decimal('total_tax', 10, 2)->default(0);
             $table->decimal('amount_paid', 10, 2)->default(0);
             $table->decimal('balance_returned', 10, 2)->default(0);
-            $table->timestamp('created_at')->index();
-            $table->timestamp('updated_at')->nullable();
+            $table->timestamp('created_at')->index()->useCurrent();
+            $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();;
         });
     }
 
