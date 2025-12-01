@@ -170,9 +170,3 @@ MAIL_PASSWORD=f174091ad01f5d
 MAIL_ENCRYPTION=tls
 MAIL_FROM_ADDRESS=billing@test.com
 MAIL_FROM_NAME="Mellow Tech Billing"
-
-
-Mailtrap 
-
-
-
