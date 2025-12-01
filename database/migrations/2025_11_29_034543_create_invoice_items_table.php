@@ -13,18 +13,31 @@ return new class extends Migration
     {
         Schema::create('invoice_items', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('invoice_id')
-                ->constrained('invoices')
-                ->onDelete('cascade')
-                ->index();
-            $table->foreignId('product_id')
-                ->constrained('products')
-                ->index();
-            $table->decimal('quantity', 8, 3);
+
+            $table->unsignedBigInteger('invoice_id');
+            $table->unsignedBigInteger('product_id');
+
+            $table->unsignedInteger('quantity');
             $table->decimal('price_per_unit', 10, 2);
-            $table->decimal('tax_amount', 10, 2)->default(0);
+            $table->decimal('tax_amount', 10, 2);
             $table->decimal('total_amount', 10, 2);
-            $table->timestamp('created_at')->useCurrent();
+
+            $table->timestamp('created_at')
+                ->useCurrent();
+
+            $table->timestamp('updated_at')
+                ->useCurrent()
+                ->useCurrentOnUpdate();
+
+            $table->foreign('invoice_id', 'fk_invoice_items_invoice_id')
+                ->references('id')
+                ->on('invoices')
+                ->cascadeOnDelete();
+
+            $table->foreign('product_id', 'fk_invoice_items_product_id')
+                ->references('id')
+                ->on('products')
+                ->cascadeOnDelete();
         });
     }
 
