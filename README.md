@@ -1,59 +1,178 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🧾 Billing & Inventory Management System (Laravel 12)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A mini billing & inventory management system built using **Laravel 12**, designed to handle invoices,
+ products, stock management, tax calculation, denomination handling, PDF generation,
+  email notifications, and analytical reports.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🚀 Features Overview
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### ✅ Billing & Invoicing
+- Create invoices with multiple products
+- Automatic tax calculation per product
+- Rounded total & balance return calculation
+- Real-time quantity editing before bill generation
+- Generate **Invoice PDF** (Dompdf)
+- Invoice number auto-generation (daily sequence)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### ✅ Inventory Management
+- Real-time stock deduction on billing
+- Stock movement logging (`inventory_logs`)
+- Prevents billing beyond available stock
 
-## Learning Laravel
+### ✅ Denomination Handling
+- Cash denomination breakdown displayed on UI
+- Stores denomination usage per invoice
+- Uses predefined denomination master table
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### ✅ Customer Handling
+- Auto-detect existing customers via email
+- Stores new customers if not found
+- Tracks repeat customers
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### ✅ Email Notification (Queued)
+- Sends invoice email after invoice generation
+- Uses Laravel Events, Listeners & Queue
+- Mailtrap supported for development testing
 
-## Laravel Sponsors
+### ✅ Invoice Listing
+- Paginated invoice list
+- Search by invoice number or customer
+- Indexed for performance
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## 🛠️ Tech Stack
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+- **Backend:** Laravel 12, PHP 8.3
+- **Frontend:** Blade, Tailwind CSS, jQuery, Axios
+- **Database:** MySQL
+- **PDF:** Dompdf
+- **Queue:** Database Queue Driver
+- **Mail:** Laravel Mail + Mailtrap
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 📂 Project Structure (Important Parts)
+app/
+├── Models/
+│ ├── Invoice.php
+│ ├── InvoiceItem.php
+│ ├── Product.php
+│ ├── Customer.php
+│ ├── Denomination.php
+│ ├── DenominationTransaction.php
+│ └── InventoryLog.php
+│
+├── Services/
+│ └── InvoiceService.php
+│
+├── Events/
+│ └── InvoiceGenerated.php
+│
+├── Listeners/
+│ └── SendInvoiceEmail.php
+│
+├── Http/
+│ └── Controllers/
+│ └── BillingController.php
+│ └── CustomerController.php
+│ └── ProductController.php
+│ └── InvoiceController.php
 
-## Code of Conduct
+---
+## 🗄️ Database Design
+### Important Relations
+- Invoice → hasMany → InvoiceItems
+- Invoice → hasMany → DenominationTransactions
+- Product → hasMany → InventoryLogs
+- Customer → hasMany → Invoices
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 📊 Advanced Analytics APIs
 
-## Security Vulnerabilities
+### ✅ Case 1: High-Variety Customers
+- Customers who purchased **5+ distinct products in a single day**
+- Returns **Top 5 customers**
+- Includes:
+  - Total amount spent
+  - Total tax paid
+  - Total items purchased
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### ✅ Case 2: Stock Forecast
+- Average daily sales (last 7 days)
+- Estimated days until stock runs out
+- Helps in proactive restocking
 
-## License
+### ✅ Case 3: Repeat Customer Insights
+- Customers who made a second purchase **within 7 days** of first
+- Returns:
+  - First purchase date
+  - Second purchase date
+  - Total spend
+- Returns **latest 5 customers**
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### ✅ Case 4: High-Demand Orders
+- Top 5 most sold products (last 30 days)
+- Lists **all invoices** that include these products
+- Used for auditing & demand tracking
+
+---
+
+## 📈 Performance Optimizations
+
+- Indexed columns:
+  - `invoices.invoice_no`
+  - `customers.email`
+  - `customers.name`
+- Aggregation-based reporting
+- Minimal recalculation (uses stored totals)
+
+---
+
+## 🧪 Validation & Security
+
+- Laravel Form Validation
+- CSRF protected requests
+- Queue-safe email dispatch
+- Transaction-safe invoice creation
+
+---
+
+## ⚙️ Setup Instructions
+
+```bash
+git clone https://github.com/angurajsivakumar-ship-it/my_billing_mellow_tech.git
+cd my_billing_mellow_tech
+
+composer install
+npm install && npm run build
+
+cp .env.example .env
+php artisan key:generate
+
+php artisan migrate --seed
+
+php artisan queue:table
+php artisan migrate
+
+php artisan serve
+php artisan queue:work
+
+---
+
+MAIL_MAILER=smtp
+MAIL_HOST=sandbox.smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=1050c3925ad21a
+MAIL_PASSWORD=f174091ad01f5d
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=billing@test.com
+MAIL_FROM_NAME="Mellow Tech Billing"
+
+
+Mailtrap 
+
+
+
