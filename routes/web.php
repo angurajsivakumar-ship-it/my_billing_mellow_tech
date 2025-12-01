@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\BillingController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\InvoiceController;
@@ -32,4 +33,13 @@ Route::name('web.')->group(function () {
         Route::get('/', [InvoiceController::class, 'index'])->name('list');
         Route::get('generate/{invoiceId}', [InvoiceController::class, 'generateInvoice'])->name('generate');
     });
+
+
+    Route::prefix('analytics')->name('analytics.')->group(function () {
+        Route::get('/high-variety-customers', [AnalyticsController::class, 'highVarietyCustomers']);
+        Route::get('/stock-forecast', [AnalyticsController::class, 'stockForecast']);
+        Route::get('/repeat-customers', [AnalyticsController::class, 'repeatCustomers']);
+        Route::get('/high-demand-orders', [AnalyticsController::class, 'highDemandOrders']);
+    });
+
 });
